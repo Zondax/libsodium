@@ -398,30 +398,30 @@ sodium_sub(unsigned char *a, const unsigned char *b, const size_t len)
     }
 }
 
-int
-_sodium_alloc_init(void)
-{
-#ifdef HAVE_ALIGNED_MALLOC
-# if defined(_SC_PAGESIZE)
-    long page_size_ = sysconf(_SC_PAGESIZE);
-    if (page_size_ > 0L) {
-        page_size = (size_t) page_size_;
-    }
-# elif defined(WINAPI_DESKTOP)
-    SYSTEM_INFO si;
-    GetSystemInfo(&si);
-    page_size = (size_t) si.dwPageSize;
-# else
-#  warning Unknown page size
-# endif
-    if (page_size < CANARY_SIZE || page_size < sizeof(size_t)) {
-        sodium_misuse(); /* LCOV_EXCL_LINE */
-    }
-#endif
-    randombytes_buf(canary, CANARY_SIZE);
-
-    return 0;
-}
+//int
+//_sodium_alloc_init(void)
+//{
+//#ifdef HAVE_ALIGNED_MALLOC
+//# if defined(_SC_PAGESIZE)
+//    long page_size_ = sysconf(_SC_PAGESIZE);
+//    if (page_size_ > 0L) {
+//        page_size = (size_t) page_size_;
+//    }
+//# elif defined(WINAPI_DESKTOP)
+//    SYSTEM_INFO si;
+//    GetSystemInfo(&si);
+//    page_size = (size_t) si.dwPageSize;
+//# else
+//#  warning Unknown page size
+//# endif
+//    if (page_size < CANARY_SIZE || page_size < sizeof(size_t)) {
+//        sodium_misuse(); /* LCOV_EXCL_LINE */
+//    }
+//#endif
+//    randombytes_buf(canary, CANARY_SIZE);
+//
+//    return 0;
+//}
 
 int
 sodium_mlock(void *const addr, const size_t len)
@@ -731,46 +731,46 @@ sodium_mprotect_readwrite(void *ptr)
     return _sodium_mprotect(ptr, _mprotect_readwrite);
 }
 
-int
-sodium_pad(size_t *padded_buflen_p, unsigned char *buf,
-           size_t unpadded_buflen, size_t blocksize, size_t max_buflen)
-{
-    unsigned char          *tail;
-    size_t                  i;
-    size_t                  xpadlen;
-    size_t                  xpadded_len;
-    volatile unsigned char  mask;
-    unsigned char           barrier_mask;
-
-    if (blocksize <= 0U) {
-        return -1;
-    }
-    xpadlen = blocksize - 1U;
-    if ((blocksize & (blocksize - 1U)) == 0U) {
-        xpadlen -= unpadded_buflen & (blocksize - 1U);
-    } else {
-        xpadlen -= unpadded_buflen % blocksize;
-    }
-    if ((size_t) SIZE_MAX - unpadded_buflen <= xpadlen) {
-        sodium_misuse();
-    }
-    xpadded_len = unpadded_buflen + xpadlen;
-    if (xpadded_len >= max_buflen) {
-        return -1;
-    }
-    tail = &buf[xpadded_len];
-    if (padded_buflen_p != NULL) {
-        *padded_buflen_p = xpadded_len + 1U;
-    }
-    mask = 0U;
-    for (i = 0; i < blocksize; i++) {
-        barrier_mask = (unsigned char) (((i ^ xpadlen) - 1U)
-           >> ((sizeof(size_t) - 1) * CHAR_BIT));
-        *(tail - i) = ((*(tail - i)) & mask) | (0x80 & barrier_mask);
-        mask |= barrier_mask;
-    }
-    return 0;
-}
+//int
+//sodium_pad(size_t *padded_buflen_p, unsigned char *buf,
+//           size_t unpadded_buflen, size_t blocksize, size_t max_buflen)
+//{
+//    unsigned char          *tail;
+//    size_t                  i;
+//    size_t                  xpadlen;
+//    size_t                  xpadded_len;
+//    volatile unsigned char  mask;
+//    unsigned char           barrier_mask;
+//
+//    if (blocksize <= 0U) {
+//        return -1;
+//    }
+//    xpadlen = blocksize - 1U;
+//    if ((blocksize & (blocksize - 1U)) == 0U) {
+//        xpadlen -= unpadded_buflen & (blocksize - 1U);
+//    } else {
+//        xpadlen -= unpadded_buflen % blocksize;
+//    }
+//    if ((size_t) SIZE_MAX - unpadded_buflen <= xpadlen) {
+//        sodium_misuse();
+//    }
+//    xpadded_len = unpadded_buflen + xpadlen;
+//    if (xpadded_len >= max_buflen) {
+//        return -1;
+//    }
+//    tail = &buf[xpadded_len];
+//    if (padded_buflen_p != NULL) {
+//        *padded_buflen_p = xpadded_len + 1U;
+//    }
+//    mask = 0U;
+//    for (i = 0; i < blocksize; i++) {
+//        barrier_mask = (unsigned char) (((i ^ xpadlen) - 1U)
+//           >> ((sizeof(size_t) - 1) * CHAR_BIT));
+//        *(tail - i) = ((*(tail - i)) & mask) | (0x80 & barrier_mask);
+//        mask |= barrier_mask;
+//    }
+//    return 0;
+//}
 
 int
 sodium_unpad(size_t *unpadded_buflen_p, const unsigned char *buf,
