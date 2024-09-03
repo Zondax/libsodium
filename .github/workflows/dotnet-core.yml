@@ -105,23 +105,23 @@ jobs:
       with:
         dotnet-version: 2.1.607
     - uses: actions/checkout@v1
-    - uses: actions/download-artifact@v1
+    - uses: actions/download-artifact@v4.1.7
       with:
         name: build-win-x64
         path: .libsodium-pack/runtimes/win-x64/native/
-    - uses: actions/download-artifact@v1
+    - uses: actions/download-artifact@v4.1.7
       with:
         name: build-win-x86
         path: .libsodium-pack/runtimes/win-x86/native/
-    - uses: actions/download-artifact@v1
+    - uses: actions/download-artifact@v4.1.7
       with:
         name: build-linux-x64
         path: .libsodium-pack/runtimes/linux-x64/native/
-    - uses: actions/download-artifact@v1
+    - uses: actions/download-artifact@v4.1.7
       with:
         name: build-linux-musl-x64
         path: .libsodium-pack/runtimes/linux-musl-x64/native/
-    - uses: actions/download-artifact@v1
+    - uses: actions/download-artifact@v4.1.7
       with:
         name: build-osx-x64
         path: .libsodium-pack/runtimes/osx-x64/native/
@@ -149,7 +149,7 @@ jobs:
       DOTNET_SYSTEM_GLOBALIZATION_INVARIANT: 1
     steps:
     - uses: actions/checkout@v1
-    - uses: actions/download-artifact@v1
+    - uses: actions/download-artifact@v4.1.7
       with:
         name: nuget-package
         path: .libsodium-pack/
